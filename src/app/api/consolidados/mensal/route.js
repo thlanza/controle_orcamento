@@ -5,7 +5,7 @@ import { buscarPeriodoMensalAtual } from "../../../../../lib/datas";
 import { enviarEmail } from "../../../../../lib/email";
 import { renderizarEmailConsolidado } from "../../../../../lib/renderizarEmailConsolidado";
 
-export async function POST(request) {
+export async function GET(request) {
     await connectToDatabase();
 
     const { inicio, fim } = buscarPeriodoMensalAtual(new Date());
