@@ -7,7 +7,12 @@ const GastoSchema = new Schema(
             required: true,
             trim: true
         },
-        valorCentavos: {
+        descricao: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        valor: {
             type: mongoose.Schema.Types.Decimal128,
             required: true,
         },

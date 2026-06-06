@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongoose";
-import { Gasto } from "@/models/Gasto";
-import { criarDecimal128, normalizarValorMonetario } from "@/lib/dinheiro";
+import { connectToDatabase } from "../../../../lib/mongoose";
+import { Gasto } from "../../../../models/Gasto";
+import { criarDecimal128, normalizarValorMonetario } from "../../../../lib/dinheiro";
 
 export async function POST(request) {
     await connectToDatabase();
 
     const body = await request.json();
 
-    const { categoria, valor, data } = body;
+    const { categoria, valor, data, descricao } = body;
 
-    if (!categoria || valor === undefined || !data) {
+    if (!categoria || valor === undefined || !data || !descricao) {
         return NextResponse.json(
             { message: "Categoria, valor e data são obrigatórios."},
             { status: 400 }
@@ -49,7 +49,8 @@ export async function POST(request) {
         categoria,
         valor: valorDecimal,
         moeda: "BRL",
-        data: dataDoGasto
+        data: dataDoGasto,
+        descricao
     });
 
     return NextResponse.json(
