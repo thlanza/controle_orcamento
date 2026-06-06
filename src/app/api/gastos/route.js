@@ -1,0 +1,64 @@
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/mongoose";
+import { Gasto } from "@/models/Gasto";
+import { criarDecimal128, normalizarValorMonetario } from "@/lib/dinheiro";
+
+export async function POST(request) {
+    await connectToDatabase();
+
+    const body = await request.json();
+
+    const { categoria, valor, data } = body;
+
+    if (!categoria || valor === undefined || !data) {
+        return NextResponse.json(
+            { message: "Categoria, valor e data são obrigatórios."},
+            { status: 400 }
+        )
+    };
+
+    const valorNormalizado = normalizarValorMonetario(valor);
+
+    if (!valorNormalizado || valorNormalizado === "0.00") {
+        return NextResponse.json(
+            {
+                message: "valor deve ser um valor monetário válido maior que zero."
+            },
+            {
+                status: 400
+            }
+        )
+    };
+
+    const valorDecimal = criarDecimal128(valorNormalizado);
+
+    const dataDoGasto = new Date(data);
+
+    if (Number.isNaN(dataDoGasto.getTime())) {
+        return NextResponse.json(
+            {
+                message: "data inválida"
+            },
+            {
+                status: 400
+            }
+        )
+    };
+
+    const gasto = await Gasto.create({
+        categoria,
+        valor: valorDecimal,
+        moeda: "BRL",
+        data: dataDoGasto
+    });
+
+    return NextResponse.json(
+        {
+            message: "Gasto cadastrado com sucesso",
+            gasto
+        },
+        {
+            status: 201
+        }
+    )
+}
