@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "../../../../../lib/mongoose";
 import { buscarConsolidado } from "../../../../../lib/consolidados";
-import { buscarPeriodoDiario } from "../../../../../lib/datas";
+import { buscarPeriodoDiaAnterior } from "../../../../../lib/datas";
 import { enviarEmail } from "../../../../../lib/email";
 import { renderizarEmailConsolidado } from "../../../../../lib/renderizarEmailConsolidado";
 
 export async function GET(request) {
     await connectToDatabase();
 
-    const { inicio, fim } = buscarPeriodoDiario(new Date());
+    const { inicio, fim } = buscarPeriodoDiaAnterior(new Date());
 
     const consolidado = await buscarConsolidado({
         inicio,

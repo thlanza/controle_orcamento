@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "../../../../../lib/mongoose";
 import { buscarConsolidado } from "../../../../../lib/consolidados";
-import { buscarPeriodoMensalAtual } from "../../../../../lib/datas";
+import { buscarPeriodoMesAnterior } from "../../../../../lib/datas";
 import { enviarEmail } from "../../../../../lib/email";
 import { renderizarEmailConsolidado } from "../../../../../lib/renderizarEmailConsolidado";
 
 export async function GET(request) {
     await connectToDatabase();
 
-    const { inicio, fim } = buscarPeriodoMensalAtual(new Date());
+    const { inicio, fim } = buscarPeriodoMesAnterior(new Date());
 
     const consolidado = await buscarConsolidado({
         inicio,

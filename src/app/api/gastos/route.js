@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "../../../../lib/mongoose";
 import { Gasto } from "../../../../models/Gasto";
 import { criarDecimal128, normalizarValorMonetario } from "../../../../lib/dinheiro";
+import { converterDataInputParaDate } from "../../../../lib/datas";
 
 export async function POST(request) {
     await connectToDatabase();
@@ -32,9 +33,9 @@ export async function POST(request) {
 
     const valorDecimal = criarDecimal128(valorNormalizado);
 
-    const dataDoGasto = new Date(data);
+    const dataDoGasto = converterDataInputParaDate(data);
 
-    if (Number.isNaN(dataDoGasto.getTime())) {
+    if (!dataDoGasto) {
         return NextResponse.json(
             {
                 message: "data inválida"

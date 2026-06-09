@@ -12,6 +12,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.0.1",
     "@mui/material": "^9.0.1",
+    "luxon": "^3.7.2",
     "mongoose": "^9.6.3",
     "next": "16.2.7",
     "nodemailer": "^8.0.10",
