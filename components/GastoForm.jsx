@@ -31,6 +31,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CategoryIcon from "@mui/icons-material/Category";
 import EventIcon from "@mui/icons-material/Event";
+import UpdateIcon from "@mui/icons-material/Update";
 
 export function GastoForm() {
   const [categorias, setCategorias] = useState([]);
@@ -42,6 +43,7 @@ export function GastoForm() {
 
   const [carregandoCategorias, setCarregandoCategorias] = useState(false);
   const [salvandoGasto, setSalvandoGasto] = useState(false);
+  const [atualizandoDatas, setAtualizandoDatas] = useState(false);
 
   const [modalCategoriaAberto, setModalCategoriaAberto] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState("");
@@ -251,6 +253,48 @@ export function GastoForm() {
     }
   }
 
+  async function handleAtualizarDatas() {
+    const confirmacao = window.confirm(
+      "Deseja atualizar as datas dos gastos cadastrados?"
+    );
+
+    if (!confirmacao) {
+      return;
+    }
+
+    setAtualizandoDatas(true);
+    setMensagem(null);
+
+    try {
+      const response = await fetch("/api/gastos/atualizar-datas", {
+        method: "POST",
+      });
+
+      const responseBody = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setMensagem({
+          tipo: "error",
+          texto: responseBody?.message || "Erro ao atualizar datas.",
+        });
+
+        return;
+      }
+
+      setMensagem({
+        tipo: "success",
+        texto: `${responseBody.corrigidos || 0} data(s) atualizada(s).`,
+      });
+    } catch (error) {
+      setMensagem({
+        tipo: "error",
+        texto: "Erro inesperado ao atualizar datas.",
+      });
+    } finally {
+      setAtualizandoDatas(false);
+    }
+  }
+
   function abrirModalCategoria() {
     setNovaCategoria("");
     setModalCategoriaAberto(true);
@@ -397,7 +441,7 @@ export function GastoForm() {
                     fullWidth
                     required
                     label="Descrição"
-                    value={valor}
+                    value={descricao}
                     onChange={(event) => setDescricao(event.target.value)}
                     placeholder="Ex: chocolate"
                     InputProps={{
@@ -433,7 +477,9 @@ export function GastoForm() {
                     type="submit"
                     variant="contained"
                     size="large"
-                    disabled={salvandoGasto || carregandoCategorias}
+                    disabled={
+                      salvandoGasto || carregandoCategorias || atualizandoDatas
+                    }
                     startIcon={
                       salvandoGasto ? (
                         <CircularProgress size={20} color="inherit" />
@@ -450,6 +496,29 @@ export function GastoForm() {
                     }}
                   >
                     {salvandoGasto ? "Salvando..." : "Salvar gasto"}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    size="large"
+                    disabled={salvandoGasto || atualizandoDatas}
+                    startIcon={
+                      atualizandoDatas ? (
+                        <CircularProgress size={20} color="inherit" />
+                      ) : (
+                        <UpdateIcon />
+                      )
+                    }
+                    onClick={handleAtualizarDatas}
+                    sx={{
+                      py: 1.4,
+                      borderRadius: 2,
+                      textTransform: "none",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {atualizandoDatas ? "Atualizando..." : "Atualizar Datas"}
                   </Button>
                 </Stack>
               </Box>
