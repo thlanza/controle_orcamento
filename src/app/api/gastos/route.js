@@ -3,6 +3,8 @@ import { connectToDatabase } from "../../../../lib/mongoose";
 import { Gasto } from "../../../../models/Gasto";
 import { criarDecimal128, normalizarValorMonetario } from "../../../../lib/dinheiro";
 import { converterDataInputParaDate } from "../../../../lib/datas";
+import { Categoria } from "../../../../models/Categoria";
+
 
 export async function POST(request) {
     await connectToDatabase();
@@ -17,6 +19,21 @@ export async function POST(request) {
             { status: 400 }
         )
     };
+
+    const categoriaExistente = await Categoria.findOne({
+        nome: categoria,
+    });
+
+    if (!categoriaExistente) {
+        return NextResponse.json(
+        {
+            message: "categoria não cadastrada",
+        },
+        {
+            status: 400,
+        }
+        );
+    }
 
     const valorNormalizado = normalizarValorMonetario(valor);
 

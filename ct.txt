@@ -1,0 +1,11 @@
+const categoriasSugeridas = [
+  "Alimentação",
+  "Transporte",
+  "Moradia",
+  "Saúde",
+  "Lazer",
+  "Educação",
+  "Assinaturas",
+  "Compras",
+  "Outros",
+];
