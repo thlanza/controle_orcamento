@@ -28,6 +28,10 @@ export async function GET(request) {
 
     return NextResponse.json({
         message: "Email semanal enviado com sucesso",
+        periodo: {
+            inicio,
+            fim
+        },
         consolidado
     })
 }
